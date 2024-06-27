@@ -14,9 +14,6 @@ export default function Home() {
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      console.log(data.status);
-      console.log(data.error);
-      console.log(error);
 
       if (data.status === 'Error') {
         setStatus('Error');
