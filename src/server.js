@@ -23,7 +23,7 @@ wss.on('connection', (ws) => {
 
             const { data: tradeDetails } = await axios.get('https://pdzsl5xw2kwfmvauo5g77wok3q0yffpl.lambda-url.us-east-2.on.aws/');
 
-            ws.send(JSON.stringify({ message: 'Replicating Master Trade...' }));
+            ws.send(JSON.stringify({ status: 'Replicating Master Trade...' }));
             const { data: connectionData } = await axios.get('https://mt4.mtapi.io/Connect?user=44712225&password=tfkp48&host=18.209.126.198&port=443');
             const connectionId = connectionData.id;
 

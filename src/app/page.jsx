@@ -9,7 +9,9 @@ export default function Home() {
   const [status, setStatus] = useState('');
   const [error, setError] = useState('');
 
-  useEffect(() => {
+  console.log(status);
+
+  const initializeWebSocket = () => {
     const ws = new WebSocket('ws://localhost:8080');
 
     ws.onmessage = (event) => {
@@ -17,7 +19,9 @@ export default function Home() {
 
       if (data.status === 'Error') {
         setStatus('Error');
-        setError(String(data.error.message));
+        setError(data.error.message);
+
+        ws.close();
 
         return;
       }
@@ -31,16 +35,32 @@ export default function Home() {
       }
     };
 
+    ws.onclose = () => {
+      console.log('Disconnected from backend');
+      setWebSocket(null);
+    };
+
     setWebSocket(ws);
+  };
+
+  useEffect(() => {
+    initializeWebSocket();
+
+    return () => {
+      if (websocket) {
+        websocket.close();
+      }
+    };
   }, []);
 
   const handleTrade = () => {
-    if (websocket) {
-      websocket.send('trade')
-    }
-
     setTradeDetails(null);
     setError('');
+    initializeWebSocket();
+
+    if (websocket) {
+      websocket.send('trade');
+    }
   };
 
   return (
@@ -52,7 +72,7 @@ export default function Home() {
           <code
             className={cn('block w-full text-sm text-green-500', {
               'animate-pulse': !tradeDetails && !error,
-              'text-red-500': error && status === 'Error'
+              'text-red-500': error || status === 'Error'
             })}
           >
             {status}
