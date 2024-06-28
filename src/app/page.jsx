@@ -36,7 +36,6 @@ export default function Home() {
     };
 
     ws.onclose = () => {
-      console.log('Disconnected from backend');
       setWebSocket(null);
     };
 
@@ -45,12 +44,6 @@ export default function Home() {
 
   useEffect(() => {
     initializeWebSocket();
-
-    return () => {
-      if (websocket) {
-        websocket.close();
-      }
-    };
   }, []);
 
   const handleTrade = () => {
